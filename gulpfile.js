@@ -48,12 +48,14 @@ gulp.task('images', function (cb) {
   return gulp.src(app + 'images/**/*')
     .pipe(isProduction ? $.plumber() : $.util.noop())
     .pipe($.size({ title: 'images' }))
-    .pipe(gulp.dest(dist + 'images/'));
+    .pipe(gulp.dest(dist + 'images/'))
+    .pipe($.connect.reload());
 });
 
-gulp.task('vendor', function () {
-  return gulp.src(app + 'vendor/**/*')
+gulp.task('vendor-js', function () {
+  return gulp.src(app + 'vendor/**/*.js')
     .pipe(isProduction ? $.plumber() : $.util.noop())
+    .pipe($.concat('vendor.js'))
     .pipe(gulp.dest(dist + 'vendor/'))
     .pipe($.size({ title: 'vendor' }))
     .pipe($.connect.reload());
@@ -72,7 +74,8 @@ gulp.task('jade', function () {
   return gulp.src(app + '*.jade')
     .pipe(isProduction ? $.plumber() : $.util.noop())
     .pipe($.jade({ pretty: true }))
-    .pipe(gulp.dest(dist));
+    .pipe(gulp.dest(dist))
+    .pipe($.connect.reload());
 });
 
 gulp.task('serve', function () {
@@ -94,15 +97,15 @@ gulp.task('watch', function () {
   gulp.watch(app + '*.jade', ['jade']);
   gulp.watch(app + 'scripts/**/*.js', ['scripts']);
   gulp.watch(app + 'images/**/*', ['images']);
-  gulp.watch(app + 'vendor/**/*', ['vendor']);
+  gulp.watch(app + 'vendor/**/*.js', ['vendor-js']);
 });
 
 // Clean, build (development) then serve & watch
 gulp.task('default', ['clean'], function () {
-  gulp.start(['images', 'vendor', 'jade', 'styl', 'scripts', 'serve', 'watch']);
+  gulp.start(['images', 'vendor-js', 'jade', 'styl', 'scripts', 'serve', 'watch']);
 });
 
 // Clean, then build (production)
 gulp.task('build', ['clean'], function () {
-  gulp.start(['images', 'vendor', 'jade', 'styl', 'scripts']);
+  gulp.start(['images', 'vendor-js', 'jade', 'styl', 'scripts']);
 });
