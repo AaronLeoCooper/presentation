@@ -45,7 +45,7 @@ gulp.task('html', function () {
 });
 
 gulp.task('images', function (cb) {
-  return gulp.src(app + 'images/**/*.{png,jpg,jpeg,gif}')
+  return gulp.src(app + 'images/**/*')
     .pipe(isProduction ? $.plumber() : $.util.noop())
     .pipe($.size({ title: 'images' }))
     .pipe(gulp.dest(dist + 'images/'));
@@ -61,10 +61,18 @@ gulp.task('vendor', function () {
 
 gulp.task('scripts', function () {
   return gulp.src(app + 'scripts/**/*')
+    .pipe(isProduction ? $.plumber() : $.util.noop())
     .pipe(isProduction ? $.uglify() : $.util.noop())
     .pipe(gulp.dest(dist + 'js/'))
     .pipe($.size({ title: 'js' }))
     .pipe($.connect.reload());
+});
+
+gulp.task('jade', function () {
+  return gulp.src(app + '*.jade')
+    .pipe(isProduction ? $.plumber() : $.util.noop())
+    .pipe($.jade({ pretty: true }))
+    .pipe(gulp.dest(dist));
 });
 
 gulp.task('serve', function () {
@@ -83,13 +91,18 @@ gulp.task('clean', function (cb) {
 
 gulp.task('watch', function () {
   gulp.watch(app + 'styl/*.styl', ['styl']);
-  gulp.watch(app + '*.html', ['html']);
+  gulp.watch(app + '*.jade', ['jade']);
   gulp.watch(app + 'scripts/**/*.js', ['scripts']);
-  gulp.watch(app + 'images/**/*.*', ['images']);
-  gulp.watch(app + 'vendor/**/*.*', ['vendor']);
+  gulp.watch(app + 'images/**/*', ['images']);
+  gulp.watch(app + 'vendor/**/*', ['vendor']);
 });
 
-gulp.task('default', ['images', 'vendor', 'html', 'styl', 'scripts', 'serve', 'watch']);
+// Clean, build (development) then serve & watch
+gulp.task('default', ['clean'], function () {
+  gulp.start(['images', 'vendor', 'jade', 'styl', 'scripts', 'serve', 'watch']);
+});
+
+// Clean, then build (production)
 gulp.task('build', ['clean'], function () {
-  gulp.start(['images', 'vendor', 'html', 'styl', 'scripts']);
+  gulp.start(['images', 'vendor', 'jade', 'styl', 'scripts']);
 });

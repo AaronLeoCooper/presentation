@@ -4,8 +4,31 @@
   "description": "Presentation for 2359media",
   "main": "index.js",
   "scripts": {
+    "start": "gulp",
+    "build": "gulp --type=production build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Aaron Leo Cooper",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "del": "^2.2.0",
+    "gulp": "^3.9.1",
+    "gulp-autoprefixer": "^3.1.0",
+    "gulp-concat": "^2.6.0",
+    "gulp-connect": "^3.2.1",
+    "gulp-jade": "^1.1.0",
+    "gulp-livereload": "^3.8.1",
+    "gulp-load-plugins": "^1.2.0",
+    "gulp-plumber": "^1.1.0",
+    "gulp-preprocess": "^2.0.0",
+    "gulp-size": "^2.1.0",
+    "gulp-stylus": "^2.3.1",
+    "gulp-uglify": "^1.5.3",
+    "gulp-util": "^3.0.7",
+    "gulp-watch": "^4.3.5",
+    "orchestrator": "^0.3.7"
+  },
+  "dependencies": {
+    "jquery": "^2.2.2"
+  }
 }
