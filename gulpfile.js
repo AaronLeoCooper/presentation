@@ -65,7 +65,24 @@ gulp.task('vendor-js', function () {
     .pipe(!isProduction ? $.plumber() : $.util.noop())
     .pipe($.concat('vendor.js'))
     .pipe(gulp.dest(dist + 'vendor/'))
-    .pipe($.size({ title: 'vendor' }))
+    .pipe($.size({ title: 'vendor-js' }))
+    .pipe($.connect.reload());
+});
+
+gulp.task('vendor-css', function () {
+  return gulp.src(app + 'vendor/**/*.css')
+    .pipe(!isProduction ? $.plumber() : $.util.noop())
+    .pipe($.concat('vendor.css'))
+    .pipe(gulp.dest(dist + 'vendor/css/'))
+    .pipe($.size({ title: 'vendor-css' }))
+    .pipe($.connect.reload());
+});
+
+gulp.task('vendor-other', function () {
+  return gulp.src(app + 'vendor/**/!(*.js|*.css)')
+    .pipe(!isProduction ? $.plumber() : $.util.noop())
+    .pipe(gulp.dest(dist + 'vendor/'))
+    .pipe($.size({ title: 'vendor-other' }))
     .pipe($.connect.reload());
 });
 
@@ -107,14 +124,36 @@ gulp.task('watch', function () {
   gulp.watch(app + 'images/**/*', ['images']);
   gulp.watch(app + 'fonts/**/*', ['fonts']);
   gulp.watch(app + 'vendor/**/*.js', ['vendor-js']);
+  gulp.watch(app + 'vendor/**/*.css', ['vendor-css']);
+  gulp.watch(app + 'vendor/**/!(*.js|*.css)', ['vendor-other']);
 });
 
 // Clean, build (development) then serve & watch
 gulp.task('default', ['clean'], function () {
-  gulp.start(['images', 'fonts', 'vendor-js', 'jade', 'styl', 'scripts', 'serve', 'watch']);
+  gulp.start([
+    'images',
+    'fonts',
+    'vendor-js',
+    'vendor-css',
+    'vendor-other',
+    'jade',
+    'styl',
+    'scripts',
+    'serve',
+    'watch',
+  ]);
 });
 
 // Clean, then build (production)
 gulp.task('build', ['clean'], function () {
-  gulp.start(['images', 'fonts', 'vendor-js', 'jade', 'styl', 'scripts']);
+  gulp.start([
+    'images',
+    'fonts',
+    'vendor-js',
+    'vendor-css',
+    'vendor-other',
+    'jade',
+    'styl',
+    'scripts',
+  ]);
 });

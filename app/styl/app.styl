@@ -1,6 +1,10 @@
 @require '_fonts'
 @require '_variables'
 
+/**
+ * Resets
+ */
+
 *
   box-sizing border-box
   color #fff
@@ -8,25 +12,85 @@
   outline 0
   margin 0
   padding 0
+  font-size 16px
+  font-weight normal
+  text-decoration none
+
+
+
+/**
+ * Base
+ */
 
 html
   bg-body()
   background-repeat no-repeat
+  overflow hidden
+  width 1000%
+  height 1000%
 
 body
-  min-height 100%
+  width 100%
+  height 100%
+
+#main
+  width 100%
+  height 100%
+  position relative
 
 .slide
   width 800px
   height 600px
   padding 20px
   background rgba(255, 255, 255, .2)
+  position absolute
+  z-index 20
 
-h1, .h1,
-h2, .h2,
-h3, .h3,
-h4, .h4,
-h5, .h5,
-h6, .h6
+h1,
+h2,
+h3,
+h4,
+h5,
+h6
   sans-serif(300)
   margin 0
+
+h1
+  font-size 3.5rem
+
+h2
+  font-size 3rem
+
+h3
+  font-size 2.5rem
+
+h4
+  font-size 2rem
+
+.h1
+  @extend h1
+
+.h2
+  @extend h2
+
+.h3
+  @extend h3
+
+.h4
+  @extend h4
+
+.h5
+  @extend h5
+
+.h6
+  @extend h6
+
+
+
+/**
+ * Layout
+ */
+
+#slide1
+  top 10%
+  left 20%

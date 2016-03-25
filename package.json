@@ -29,6 +29,7 @@
     "orchestrator": "^0.3.7"
   },
   "dependencies": {
+    "font-awesome": "^4.5.0",
     "jquery": "^2.2.2"
   }
 }
