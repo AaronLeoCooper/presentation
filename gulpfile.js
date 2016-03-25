@@ -24,8 +24,8 @@ var autoprefixerBrowsers = [
 ];
 
 gulp.task('styl', function (cb) {
-  return gulp.src(app + 'styl/main.styl')
-    .pipe(isProduction ? $.plumber() : $.util.noop())
+  return gulp.src(app + 'styl/app.styl')
+    .pipe(!isProduction ? $.plumber() : $.util.noop())
     .pipe($.stylus({
       compress: isProduction,
       'include css': true,
@@ -38,7 +38,7 @@ gulp.task('styl', function (cb) {
 
 gulp.task('html', function () {
   return gulp.src(app + '*.html')
-    .pipe(isProduction ? $.plumber() : $.util.noop())
+    .pipe(!isProduction ? $.plumber() : $.util.noop())
     .pipe(gulp.dest(dist))
     .pipe($.size({ title: 'html' }))
     .pipe($.connect.reload());
@@ -46,15 +46,23 @@ gulp.task('html', function () {
 
 gulp.task('images', function (cb) {
   return gulp.src(app + 'images/**/*')
-    .pipe(isProduction ? $.plumber() : $.util.noop())
+    .pipe(!isProduction ? $.plumber() : $.util.noop())
     .pipe($.size({ title: 'images' }))
     .pipe(gulp.dest(dist + 'images/'))
     .pipe($.connect.reload());
 });
 
+gulp.task('fonts', function (cb) {
+  return gulp.src(app + 'fonts/**/*')
+    .pipe(!isProduction ? $.plumber() : $.util.noop())
+    .pipe($.size({ title: 'fonts' }))
+    .pipe(gulp.dest(dist + 'fonts/'))
+    .pipe($.connect.reload());
+});
+
 gulp.task('vendor-js', function () {
   return gulp.src(app + 'vendor/**/*.js')
-    .pipe(isProduction ? $.plumber() : $.util.noop())
+    .pipe(!isProduction ? $.plumber() : $.util.noop())
     .pipe($.concat('vendor.js'))
     .pipe(gulp.dest(dist + 'vendor/'))
     .pipe($.size({ title: 'vendor' }))
@@ -63,7 +71,7 @@ gulp.task('vendor-js', function () {
 
 gulp.task('scripts', function () {
   return gulp.src(app + 'scripts/**/*')
-    .pipe(isProduction ? $.plumber() : $.util.noop())
+    .pipe(!isProduction ? $.plumber() : $.util.noop())
     .pipe(isProduction ? $.uglify() : $.util.noop())
     .pipe(gulp.dest(dist + 'js/'))
     .pipe($.size({ title: 'js' }))
@@ -72,7 +80,7 @@ gulp.task('scripts', function () {
 
 gulp.task('jade', function () {
   return gulp.src(app + '*.jade')
-    .pipe(isProduction ? $.plumber() : $.util.noop())
+    .pipe(!isProduction ? $.plumber() : $.util.noop())
     .pipe($.jade({ pretty: true }))
     .pipe(gulp.dest(dist))
     .pipe($.connect.reload());
@@ -93,19 +101,20 @@ gulp.task('clean', function (cb) {
 });
 
 gulp.task('watch', function () {
-  gulp.watch(app + 'styl/*.styl', ['styl']);
-  gulp.watch(app + '*.jade', ['jade']);
+  gulp.watch(app + 'styl/**/*.styl', ['styl']);
+  gulp.watch(app + '**/*.jade', ['jade']);
   gulp.watch(app + 'scripts/**/*.js', ['scripts']);
   gulp.watch(app + 'images/**/*', ['images']);
+  gulp.watch(app + 'fonts/**/*', ['fonts']);
   gulp.watch(app + 'vendor/**/*.js', ['vendor-js']);
 });
 
 // Clean, build (development) then serve & watch
 gulp.task('default', ['clean'], function () {
-  gulp.start(['images', 'vendor-js', 'jade', 'styl', 'scripts', 'serve', 'watch']);
+  gulp.start(['images', 'fonts', 'vendor-js', 'jade', 'styl', 'scripts', 'serve', 'watch']);
 });
 
 // Clean, then build (production)
 gulp.task('build', ['clean'], function () {
-  gulp.start(['images', 'vendor-js', 'jade', 'styl', 'scripts']);
+  gulp.start(['images', 'fonts', 'vendor-js', 'jade', 'styl', 'scripts']);
 });
