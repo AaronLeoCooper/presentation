@@ -138,6 +138,15 @@ h4
   clearfix()
   z-index 10
 
+svg
+  filter drop-shadow(-2px -2px 0 rgba(0, 0, 0, .3))
+
+path
+  stroke-width 20px
+  stroke-dasharray 50px, 40px
+  opacity .3
+
+
 ul,
 ol
   display block
@@ -145,6 +154,7 @@ ol
 
 ul
   & > li
+    padding 5px 0
     padding-left .5rem
     border-left solid .25rem rgba(255, 255, 255, .3)
 
@@ -167,6 +177,12 @@ for zindex in 0...21
   left 150px
   width 800px
   height 600px
+
+#svg1
+  position absolute
+  top 500px
+  left 220px
+
 
 #slide1
   top 1100px
