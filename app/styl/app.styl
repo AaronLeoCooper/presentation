@@ -7,15 +7,15 @@
 
 *
   box-sizing border-box
-  color #fff
+  color inherit
   border 0
   outline 0
   margin 0
   padding 0
-  font-size 28px
-  font-weight normal
+  font-size 30px
   text-decoration none
-  serif()
+  body()
+  line-height 160%
 
 
 
@@ -24,28 +24,52 @@
  */
 
 html
-  bg-body()
   background-repeat no-repeat
   overflow hidden
-  width 1000%
-  height 1000%
+  height 100%
+  width 100%
+  transform rotate(0deg)
+  transition transform 2s ease-in-out
 
 body
   width 100%
   height 100%
+  color $body-colour
 
 #main
-  width 100%
-  height 100%
-  position relative
+  bg-body()
+  height 1000%
+  width 1000%
+  margin-top -100px
+  margin-left -100px
+  transform translate(0, 0) scale(1) rotate(0deg)
+  transition transform 2s $easeOutBack
+
+  &:before
+    content ''
+    position absolute
+    background url(/images/noise.png)
+    top 0
+    left 0
+    right 0
+    bottom 0
+    z-index 0
 
 .slide
+  position absolute
   width 800px
   height 600px
   padding 20px
-  background rgba(255, 255, 255, .2)
-  position absolute
+  // background rgba(255, 255, 255, .2)
+  background-color $paper-bg
+  background-image url(/images/noise.png)
+  box-shadow 0 4px 10px 0 rgba(0, 0, 0, .4)
+  border-radius 3px
+  margin 50px
   z-index 20
+  color $paper-text
+  transform rotate(0deg)
+  transform-origin 0 0
 
 h1,
 h2,
@@ -58,9 +82,21 @@ h6
 
 h1
   font-size 2rem
+  line-height 200%
 
 h2
   font-size 1.8rem
+  position relative
+
+  &:after
+    content ''
+    position absolute
+    top 100%
+    height 2px
+    left 0
+    width 100px
+    background $paper-text
+    opacity .3
 
 h3
   font-size 1.5rem
@@ -86,9 +122,21 @@ h4
 .h6
   @extend h6
 
-.icon
+.icon-bg
+  position absolute
+  right 40px
+  top 20px
+  opacity .2
+  text-shadow 2px 2px 0 rgba(255, 255, 255, 1), -2px -2px 0 rgba(0, 0, 0, 1)
+  z-index 0
+
   &.icon-xl
     font-size 12rem
+
+.box
+  position relative
+  clearfix()
+  z-index 10
 
 ul,
 ol
@@ -96,12 +144,16 @@ ol
   list-style none
 
 ul
-  li
-    padding-left 1.2rem
-    &:before
-      content '-'
-      position absolute
-      left .5rem
+  & > li
+    padding-left .5rem
+    border-left solid .25rem rgba(255, 255, 255, .3)
+
+em
+  font-style italic
+
+for zindex in 0...21
+  .{'z-' + zindex}
+    z-index zindex
 
 
 
@@ -111,17 +163,17 @@ ul
 
 #intro
   position absolute
-  top 50px
-  left 50px
+  top 150px
+  left 150px
   width 800px
   height 600px
 
-  .icon
-    position absolute
-    right 160px
-    top -20px
-    opacity .2
-
 #slide1
-  top 10%
-  left 20%
+  top 1100px
+  left 2000px
+  transform rotate(20deg)
+
+#slide2
+  top 1800px
+  left 2600px
+  transform rotate(35deg)
