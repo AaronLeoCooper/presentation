@@ -103,7 +103,6 @@
       slideRot = self.slideRotations[newSlide];
 
       newTranslate = 'translate(-' + slidePos[0] + 'px, -' + slidePos[1] + 'px)';
-      // newTranslate += ' rotate(' + slideRot + 'deg)';
 
       $m.css({
         msTransform: newTranslate,
@@ -122,7 +121,7 @@
 
       newWindowRotate = 'rotate(' + (slideRot * -1) + 'deg)';
 
-      $('html').css({
+      $(B).css({
         msTransform: newWindowRotate,
         webkitTransform: newWindowRotate,
         transform: newWindowRotate

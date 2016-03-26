@@ -24,17 +24,17 @@
  */
 
 html
-  background-repeat no-repeat
   overflow hidden
   height 100%
   width 100%
-  transform rotate(0deg)
-  transition transform 2s ease-in-out
 
 body
   width 100%
   height 100%
   color $body-colour
+  transform rotate(0deg)
+  transform-origin 50% 50%
+  transition transform 2s ease-in-out
 
 #main
   bg-body()
@@ -60,16 +60,19 @@ body
   width 800px
   height 600px
   padding 20px
-  // background rgba(255, 255, 255, .2)
   background-color $paper-bg
   background-image url(/images/noise.png)
-  box-shadow 0 4px 10px 0 rgba(0, 0, 0, .4)
+  box-shadow 0 4px 10px 0 rgba(0, 0, 0, .4), inset 0 0 50px rgba(0, 0, 0, .1)
   border-radius 3px
   margin 50px
-  z-index 20
+  // z-index 20
   color $paper-text
   transform rotate(0deg)
   transform-origin 0 0
+
+  ul
+    & > li
+      border-left solid .25rem rgba($paper-text, .3)
 
 h1,
 h2,
@@ -87,6 +90,7 @@ h1
 h2
   font-size 1.8rem
   position relative
+  margin-bottom 30px
 
   &:after
     content ''
@@ -126,26 +130,33 @@ h4
   position absolute
   right 40px
   top 20px
-  opacity .2
-  text-shadow 2px 2px 0 rgba(255, 255, 255, 1), -2px -2px 0 rgba(0, 0, 0, 1)
   z-index 0
 
+  &.fa
+    opacity .2
+    text-shadow 2px 2px 0 rgba(255, 255, 255, 1), -2px -2px 0 rgba(0, 0, 0, 1)
+
   &.icon-xl
-    font-size 12rem
+    font-size 11rem
+
+img.icon-bg
+  @extend .icon-bg
+  max-height 7rem
 
 .box
   position relative
   clearfix()
   z-index 10
 
-svg
+.svg-path
+  position absolute
+  z-index 0
   filter drop-shadow(-2px -2px 0 rgba(0, 0, 0, .3))
 
 path
   stroke-width 20px
   stroke-dasharray 50px, 40px
   opacity .3
-
 
 ul,
 ol
@@ -161,7 +172,7 @@ ul
 em
   font-style italic
 
-for zindex in 0...21
+for zindex in 0...11
   .{'z-' + zindex}
     z-index zindex
 
@@ -179,14 +190,17 @@ for zindex in 0...21
   height 600px
 
 #svg1
-  position absolute
   top 500px
   left 220px
-
 
 #slide1
   top 1100px
   left 2000px
+  transform rotate(20deg)
+
+#svg2
+  top 1680px
+  left 2680px
   transform rotate(20deg)
 
 #slide2
