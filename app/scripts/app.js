@@ -20,29 +20,40 @@
     self.slide = 0;
     self.$slides = $('div[' + slideAttr + ']');
     self.changingSlide = false;
-    self.slideRefs = [];
-    self.slidePositions = {};
-    self.slideRotations = {};
+    self.slideRefs = {};
+    // self.slidePositions = {};
+    // self.slideRotations = {};
 
     self.$slides.each(function () {
       var $s = $(this);
       var sNum = $s.attr(slideAttr);
+      var newRotation;
+      var newTransRotate;
 
-      self.slideRefs.push(sNum);
+      // Init the slide data object
+      self.slideRefs[sNum] = {};
 
-      if (sNum === '0') {
-        self.slidePositions[sNum] = [0, 0];
-        self.slideRotations[sNum] = 0;
-      } else {
+      if (sNum === '0') { // Intro (first) slide, just set everything to 0
+        self.slideRefs[sNum].position = [0, 0];
+        self.slideRefs[sNum].rotation = 0;
+      } else { // Any slide except the first
         // self.slidePositions[sNum] = [
         //   $s.css('left').replace("px", ""),
         //   $s.css('top').replace("px", "")
         // ];
-        self.slidePositions[sNum] = [
+        self.slideRefs[sNum].position = [
           $s.offset().left,
-          $s.offset().top + 100
+          $s.offset().top - 100
         ];
-        self.slideRotations[sNum] = getRotationDegrees($s);
+        newRotation = $s.attr('data-rotate');
+        self.slideRefs[sNum].rotation = parseInt(newRotation);
+
+        newTransRotate = 'rotate(' + newRotation + 'deg)';
+        $s.css({
+          msTransform: newTransRotate,
+          webkitTransform: newTransRotate,
+          transform: newTransRotate
+        })
       }
     });
   };
@@ -90,7 +101,7 @@
     var newWindowRotate;
 
     // Only change if not currently changing & if slide is valid
-    if (!self.changingSlide && self.slideRefs.indexOf(newSlide.toString() > -1)) {
+    if (!self.changingSlide && self.slideRefs.hasOwnProperty(newSlide.toString())) {
       self.slide = parseInt(newSlide);
       self.changingSlide = true;
 
@@ -99,8 +110,8 @@
         self.changingSlide = false;
       });
 
-      slidePos = self.slidePositions[newSlide];
-      slideRot = self.slideRotations[newSlide];
+      slidePos = self.slideRefs[newSlide].position;
+      slideRot = self.slideRefs[newSlide].rotation;
 
       newTranslate = 'translate(-' + slidePos[0] + 'px, -' + slidePos[1] + 'px)';
 
