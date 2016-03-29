@@ -160,7 +160,6 @@
       $nextPopover.one(transitionEnd, function () {
         // Popover finished transitioning
         self.changingSlide = false;
-        console.log(self);
       });
     }
   };
@@ -189,9 +188,14 @@
         $currentPopover.removeClass(popoverActiveClass);
 
         return $currentPopover.one(transitionEnd, function () {
-          // Popover now hidden, continue to the slide
+          // Popover now hidden, continue on
           self.popover = -1;
-          return continueSlide();
+
+          if (isPrev) { // Prev slide, don't change until next prev request
+            return false;
+          } else { // Next slide, therefore carry on to slide
+            return continueSlide();
+          }
         });
       }
 
