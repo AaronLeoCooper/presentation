@@ -6,31 +6,49 @@ block variables
 
 block body
 
-	#main
+	// main-cont - rotates view
+	#main-cont
 
-		#intro(data-slide="0")
-			i.icon-bg.icon-xl.fa.fa-question-circle
-			.box
-				h1 What I've been up to lately
-				ul
-					li Liquid Sky <em>(with Singtel)</em>
-					li My Blog
-					li Other mini apps/plugins
+		// main - pans view
+		#main
 
-		svg#svg1.svg-path(width='2000px' height='1140px' viewbox='0 0 800 570' preserveaspectratio='xMidYMid meet' zoomandpan='disable')
-			path(d='M16,16c6.317305701999999,49.50155703280001,24.520483175600006,103.1774315458,80,130c76.4795168245,28.822568454199995,137.8545783358,-14.963428728999986,192,-28c69.1454216642,-11.036571271000014,87.95802180940001,-2.200944978099983,116,34c47.04197819059999,72.20094497809998,31.48530925289998,129.00151827929994,88,161c48.51469074709996,26.998481720700056,78.03231121520002,17.70573515470005,133,0' stroke='white' style='fill: none; vector-effect: non-scaling-stroke;' transform="matrix(1.24928 0 0 1.24928 -1.59158 -1.59158)")
+			#intro.pres-slide(data-slide="0")
+				i.icon-bg.icon-xl.fa.fa-question-circle
+				.box
+					h1 What I've been up to lately
+					ul
+						li Liquid Sky <em>(with Singtel)</em>
+						li Other things I've been doing
 
-		#slide1.slide(data-slide="1" data-rotate="20")
-			img.icon-bg(src="images/liquid-logo.png")
-			.box
-				h2 What is Liquid Sky?
-				ul
-					li A tool for tracking “cloud costs”
+			svg#svg1.svg-path(width='2000px' height='1140px' viewbox='0 0 800 570' preserveaspectratio='xMidYMid meet' zoomandpan='disable')
+				path(d='M16,16c6.317305701999999,49.50155703280001,24.520483175600006,103.1774315458,80,130c76.4795168245,28.822568454199995,137.8545783358,-14.963428728999986,192,-28c69.1454216642,-11.036571271000014,87.95802180940001,-2.200944978099983,116,34c47.04197819059999,72.20094497809998,31.48530925289998,129.00151827929994,88,161c48.51469074709996,26.998481720700056,78.03231121520002,17.70573515470005,133,0' stroke='white' style='fill: none; vector-effect: non-scaling-stroke;' transform="matrix(1.24928 0 0 1.24928 -1.59158 -1.59158)")
 
-		svg#svg2.svg-path(width='300px' height='300px' viewbox='0 0 300 300' preserveaspectratio='xMidYMid meet' zoomandpan='disable')
-			path(d='M6.543624161073867,8.053691275167795q96.30540163096579,-2.246507728940778,95.39376528829307,107.13540852999704' stroke='white' style='fill: none; vector-effect: non-scaling-stroke;' transform="matrix(2.43599 0 0 2.43599 0.851689 -1.35971)")
+			#slide1.pres-slide.slide(data-slide="1" data-rotate="20")
+				img.icon-bg(src="images/liquid-logo.png")
+				.box
+					h2 What is Liquid Sky?
+					ul
+						li A tool for tracking “cloud costs”
 
-		#slide2.slide(data-slide="2" data-rotate="35")
-			i.icon-bg.icon-xl.fa.fa-usd
-			.box
-				h2 What are "Cloud Services"?
+			svg#svg2.svg-path(width='300px' height='300px' viewbox='0 0 300 300' preserveaspectratio='xMidYMid meet' zoomandpan='disable')
+				path(d='M6.543624161073867,8.053691275167795q96.30540163096579,-2.246507728940778,95.39376528829307,107.13540852999704' stroke='white' style='fill: none; vector-effect: non-scaling-stroke;' transform="matrix(2.43599 0 0 2.43599 0.851689 -1.35971)")
+
+			#slide2.pres-slide.slide(data-slide="2" data-rotate="35")
+				.box
+					h2 What are "Cloud Costs"?
+					ul
+						li Services such as <strong>AWS</strong> & <strong>Azure</strong>
+				.box.box-spaced.flex
+					.flex-child
+						img(src="images/aws-logo.png")
+					.flex-child
+						img(src="images/azure-logo.png")
+
+	// popovers - fixed element, relative to window
+	#popovers
+		.popover.pres-popover(data-slide="1-0")
+			img(src="images/aws-list.png")
+		.popover.pres-popover(data-slide="1-1")
+			img(src="images/aws-list.png")
+		.popover.pres-popover(data-slide="2-0")
+			img(src="images/aws-list.png")

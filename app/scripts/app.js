@@ -1,3 +1,8 @@
+/**
+ * ================= |
+ * SLIDESHOW HANDLER |
+ * ================= |
+ */
 (function ($) {
 
   /**
@@ -6,10 +11,15 @@
   var D = document;
   var W = window;
   var B = D.getElementsByTagName('BODY')[0];
+  var $M = $('#main-cont');
   var $m = $('#main');
   var slideAttr = 'data-slide';
+  var slideSelector = '.pres-slide';
+  var popoverSelector = '.pres-popover';
   var transitionEnd = 'webkitTransitionEnd otransitionend' +
     'oTransitionEnd msTransitionEnd transitionend';
+  var popoverDelim = '-';
+  var popoverActiveClass = 'displaying';
 
   /**
    * Main slide init
@@ -18,12 +28,15 @@
     var self = this;
 
     self.slide = 0;
-    self.$slides = $('div[' + slideAttr + ']');
+    self.popover = -1; // -1 means not currently displaying popover
+    self.$slides = $(slideSelector + '[' + slideAttr + ']');
+    self.$popovers = $(popoverSelector + '[' + slideAttr + ']');
     self.changingSlide = false;
     self.slideRefs = {};
-    // self.slidePositions = {};
-    // self.slideRotations = {};
+    self.popoverRefs = {};
+    self.slidePopovers = {};
 
+    // Build up initial slide data
     self.$slides.each(function () {
       var $s = $(this);
       var sNum = $s.attr(slideAttr);
@@ -37,13 +50,9 @@
         self.slideRefs[sNum].position = [0, 0];
         self.slideRefs[sNum].rotation = 0;
       } else { // Any slide except the first
-        // self.slidePositions[sNum] = [
-        //   $s.css('left').replace("px", ""),
-        //   $s.css('top').replace("px", "")
-        // ];
         self.slideRefs[sNum].position = [
           $s.offset().left,
-          $s.offset().top - 100
+          $s.offset().top - 70
         ];
         newRotation = $s.attr('data-rotate');
         self.slideRefs[sNum].rotation = parseInt(newRotation);
@@ -55,6 +64,22 @@
           transform: newTransRotate
         })
       }
+
+      // Init the slide popover key for this slide
+      self.slidePopovers[sNum] = [];
+    });
+
+    // Build up initial popover data
+    self.$popovers.each(function () {
+      var $p = $(this);
+      var pNum = $p.attr(slideAttr);
+      var pNumArr = pNum.split(popoverDelim);
+
+      // Store the popover element in the popover reference (slide/order)
+      self.popoverRefs[pNum] = self.getPopover(pNumArr[0], pNumArr[1]);
+
+      // Store all slide refs with popover refs in array
+      self.slidePopovers[pNumArr[0]].push(parseInt(pNumArr[1]));
     });
   };
 
@@ -64,12 +89,16 @@
    */
   Slideshow.prototype.next = function () {
     var self = this;
+    var popoverSearchNext = self.slide + popoverDelim + (self.popover + 1);
 
-    // Don't go above number of slides
-    if (self.slide < (self.$slides.length - 1)) {
-      self.changeSlide(self.slide + 1);
-    } else {
-      return false;
+    if (self.popoverRefs.hasOwnProperty(popoverSearchNext)) { // Next popover exists
+      self.changePopover(popoverSearchNext);
+    } else { // No popovers left, proceed to next slide
+      if (self.slide < (self.$slides.length - 1)) { // Don't go above number of slides
+        self.changeSlide(self.slide + 1);
+      } else {
+        return false;
+      }
     }
   };
 
@@ -79,12 +108,60 @@
    */
   Slideshow.prototype.prev = function () {
     var self = this;
+    var popoverSearchPrev = self.slide + popoverDelim + (self.popover - 1);
 
-    // Don't go below slide 0
-    if (self.slide > 0) {
-      self.changeSlide(self.slide - 1);
-    } else {
-      return false;
+    if (self.popoverRefs.hasOwnProperty(popoverSearchPrev)) { // Prev popover exists
+      self.changePopover(popoverSearchPrev);
+    } else { // No popovers left, proceed to prev slide
+      if (self.slide > 0) { // Don't go below slide 0
+        self.changeSlide((self.slide - 1));
+      } else {
+        return false;
+      }
+    }
+  };
+
+  /**
+   * Jump to an arbitrary popover
+   * @method changePopover
+   * @param  {String}         newPopover - Popover ref to jump to
+   */
+  Slideshow.prototype.changePopover = function (newPopover) {
+    var self = this;
+    var $activePopover = [];
+    var $nextPopover = self.popoverRefs[newPopover];
+    var newPopoverArr = newPopover.split(popoverDelim);
+
+    self.changingSlide = true;
+
+    // Get & hide currently displayed popover
+    if (self.popover > -1) {
+      $activePopover = self.getPopover();
+      if ($activePopover.length > 0) {
+        $activePopover.removeClass(popoverActiveClass);
+
+        return $activePopover.one(transitionEnd, function () {
+          // Previous popover hidden, continue with new one
+          return continuePopover();
+        });
+      }
+    }
+
+    // No popover to hide, continue with next popover
+    return continuePopover();
+
+    function continuePopover() {
+      // Update the popover count to the new one
+      self.popover = parseInt(newPopoverArr[1]);
+
+      // Display new popover
+      $nextPopover.addClass(popoverActiveClass);
+
+      $nextPopover.one(transitionEnd, function () {
+        // Popover finished transitioning
+        self.changingSlide = false;
+        console.log(self);
+      });
     }
   };
 
@@ -99,16 +176,36 @@
     var slideRot;
     var newTranslate;
     var newWindowRotate;
+    var isPrev = newSlide < self.slide;
+    var lastPopover;
+    var $currentPopover;
 
     // Only change if not currently changing & if slide is valid
     if (!self.changingSlide && self.slideRefs.hasOwnProperty(newSlide.toString())) {
+
+      // Popover currently displaying, hide it before proceeding
+      if (self.popover > -1) {
+        $currentPopover = self.getPopover();
+        $currentPopover.removeClass(popoverActiveClass);
+
+        return $currentPopover.one(transitionEnd, function () {
+          // Popover now hidden, continue to the slide
+          self.popover = -1;
+          return continueSlide();
+        });
+      }
+
+      // No popover to deal with, continue move to slide
+      return continueSlide();
+
+    } else { // End of slides (start/end)
+      return false;
+    }
+
+    // Contained core slide move logic for calling dynamically
+    function continueSlide() {
       self.slide = parseInt(newSlide);
       self.changingSlide = true;
-
-      // When transition complete, reset changingSlide
-      $m.one(transitionEnd, function () {
-        self.changingSlide = false;
-      });
 
       slidePos = self.slideRefs[newSlide].position;
       slideRot = self.slideRefs[newSlide].rotation;
@@ -132,13 +229,24 @@
 
       newWindowRotate = 'rotate(' + (slideRot * -1) + 'deg)';
 
-      $(B).css({
+      $($M).css({
         msTransform: newWindowRotate,
         webkitTransform: newWindowRotate,
         transform: newWindowRotate
       });
-    } else {
-      return false;
+
+      // When transition complete, reset changingSlide
+      $m.one(transitionEnd, function () {
+        // Previous slide and a popover needs to display
+        if (isPrev && self.slidePopovers[newSlide].length > 0) {
+          // Retrieve the last (numerically) popover for this slide
+          lastPopover = Math.max.apply(null, self.slidePopovers[newSlide]);
+
+          self.changePopover(self.slide + popoverDelim + lastPopover);
+        } else {
+          self.changingSlide = false;
+        }
+      });
     }
   };
 
@@ -151,7 +259,21 @@
     var self = this;
     var ref = ref || self.slide;
 
-    return $('div[' + slideAttr + '=' + ref + ']');
+    return $(slideSelector + '[' + slideAttr + '="' + ref + '"]');
+  };
+
+  /**
+   * Return a popover with the given ref, or the currently active ref
+   * @method getPopover
+   * @param  {Int, String}    ref - The popover ref to retieve
+   */
+  Slideshow.prototype.getPopover = function (sRef, pRef) {
+    var self = this;
+    var sRef = sRef || self.slide;
+    var pRef = pRef || self.popover;
+
+    return $(popoverSelector + '[' + slideAttr + '="'
+      + sRef + popoverDelim + pRef + '"]');
   };
 
   /**

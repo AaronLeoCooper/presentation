@@ -20,10 +20,19 @@
 sans-serif($weight = 400)
   if $weight == 700
     font-family 'Hind-Bold'
+
+    strong
+      font-weight 700
   else if $weight == 600
     font-family 'Hind-Semibold'
+
+    strong
+      font-family 'Hind-Bold'
   else if $weight == 300
     font-family 'Hind-Light'
+
+    strong
+      font-family 'Hind-Semibold'
 
 /**
  * Serif
@@ -42,6 +51,9 @@ serif($weight = 400)
   else
     font-family 'NotoSerif-Regular'
 
+    strong
+      font-family 'NotoSerif-Bold'
+
 /**
  * Body
  */
@@ -52,3 +64,6 @@ serif($weight = 400)
 body($weight = 400)
   font-family 'NixieOne-Regular'
   font-weight $weight
+
+  strong
+    font-weight 700

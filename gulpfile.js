@@ -20,7 +20,7 @@ var autoprefixerBrowsers = [
   'opera >= 23',
   'ios >= 6',
   'android >= 4.4',
-  'bb >= 10',
+  'bb >= 10'
 ];
 
 gulp.task('styl', function (cb) {
@@ -28,7 +28,7 @@ gulp.task('styl', function (cb) {
     .pipe(!isProduction ? $.plumber() : $.util.noop())
     .pipe($.stylus({
       compress: isProduction,
-      'include css': true,
+      'include css': true
     }))
     .pipe($.autoprefixer({ browsers: autoprefixerBrowsers }))
     .pipe(gulp.dest(dist + 'css/'))
@@ -108,8 +108,8 @@ gulp.task('serve', function () {
     root: dist,
     port: port,
     livereload: {
-      port: 35729,
-    },
+      port: 35729
+    }
   });
 });
 
@@ -140,7 +140,7 @@ gulp.task('default', ['clean'], function () {
     'styl',
     'scripts',
     'serve',
-    'watch',
+    'watch'
   ]);
 });
 
@@ -154,6 +154,6 @@ gulp.task('build', ['clean'], function () {
     'vendor-other',
     'jade',
     'styl',
-    'scripts',
+    'scripts'
   ]);
 });
